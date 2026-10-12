@@ -1,8 +1,8 @@
 # 2EZ4U APP
 
-Proyek Struktur Data & Analisa Algoritma (EC234303) berupa backend layanan antar makanan/barang versi mini.
+Final Proyek dari kelas Struktur Data & Analisa Algoritma berupa backend layanan antar makanan/barang versi mini.
 
-## Cakupan proyek sampai M3
+## Deskripsi proyek M1 - M3
 
 Proyek dibangun bertahap menggunakan dataset pesanan dan implementasi struktur data manual.
 
@@ -47,38 +47,6 @@ M3 menyediakan empat algoritma:
 
 Setiap algoritma mencatat jumlah perbandingan. Kunci data yang direncanakan adalah `oid`, `harga`, dan `t_selesai_detik`.
 
-## Kompleksitas algoritma
-
-| Fitur | Kompleksitas umum |
-|---|---:|
-| Array: akses indeks | O(1) |
-| Array: sisip/hapus di tengah | O(n) |
-| Linked list: akses indeks | O(n) |
-| Linked list: tambah di belakang | O(1) |
-| Stack push/pop | O(1) |
-| Circular queue enqueue/dequeue | O(1) |
-| Queue naif dequeue | O(n) |
-| Insertion sort | O(n²) |
-| Merge sort | O(n log n) |
-| Linear search | O(n) |
-| Binary search | O(log n) |
-
-## Struktur repository
-
-```text
-2ez4u/
-├── README.md
-├── data/
-│   ├── peta.csv
-│   └── pesanan.csv
-├── backend/
-│   ├── m1_pesanan.py
-│   ├── m2_antrean.py
-│   └── m3_laporan.py
-├── frontend/
-│   └── ui.py
-└── app.py
-```
 
 ## Dataset
 
