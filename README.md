@@ -28,14 +28,6 @@ tests/test_m1.py       pengujian M1
 tests/test_m2.py       pengujian M2
 ```
 
-```mermaid
-flowchart LR
-    CSV["data/pesanan.csv"] --> L["LayananPesanan"]
-    L --> A["Array (dinamis)"]
-    L --> LL["LinkedList (head/tail)"]
-    UI["frontend/ui.py"] -->|menu M1| L
-```
-
 Tampilan: daftar menu di kiri, form parameter + hasil di kanan, panel **COMMAND** di bawah
 yang mencatat perintah, modul, dan waktu backend.
 
