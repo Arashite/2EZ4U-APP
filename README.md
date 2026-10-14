@@ -1,80 +1,93 @@
 # 2EZ4U APP
 
-Final Proyek dari kelas Struktur Data & Analisa Algoritma berupa backend layanan antar makanan/barang versi mini.
+Final Proyek dari kelas Struktur Data & Analisa Algoritma (EC234303): *engine backend* layanan antar
+makanan/barang versi mini (seperti GoFood/GrabFood) dengan satu jendela Tkinter.
 
-## Deskripsi proyek M1 - M3
+## Menjalankan
 
-Proyek dibangun bertahap menggunakan dataset pesanan dan implementasi struktur data manual.
-
-### M1 — Pesanan: Array dan Linked List
-
-Modul: `backend/m1_pesanan.py`
-
-M1 menyimpan data pesanan ke dua struktur sekaligus:
-
-- Array dinamis dengan kapasitas yang bertambah dua kali lipat saat penuh.
-- Linked list dengan node, `head`, dan `tail`.
-- Operasi melihat, menambah, dan menghapus pesanan.
-- Aturan prioritas: VIP (`1`) masuk paling depan; prioritas (`2`) masuk setelah VIP dan sebelum reguler; reguler (`3`) masuk paling belakang.
-
-Tujuannya adalah membandingkan biaya operasi array dan linked list pada kasus yang sama.
-
-### M2 — Stack, Queue, dan Undo/Redo
-
-Modul: `backend/m2_antrean.py`
-
-M2 mencakup:
-
-- Stack manual dengan operasi `push`, `pop`, `peek`, dan `is_empty`.
-- Konversi ekspresi infix menjadi postfix.
-- Evaluasi ekspresi postfix menggunakan stack angka.
-- Queue naif dengan pergeseran elemen saat `dequeue`.
-- Circular queue dengan indeks `front`, `rear`, dan `count`.
-- Undo dan redo untuk aksi antrean.
-
-Queue naif dan circular queue dipertahankan bersama agar perbedaan performanya dapat diukur.
-
-### M3 — Sort dan Search
-
-Modul: `backend/m3_laporan.py`
-
-M3 menyediakan empat algoritma:
-
-- Insertion sort yang stabil dan bekerja in-place.
-- Merge sort yang stabil untuk data besar.
-- Linear search tanpa syarat data terurut.
-- Binary search pada data yang sudah terurut.
-
-Setiap algoritma mencatat jumlah perbandingan. Kunci data yang direncanakan adalah `oid`, `harga`, dan `t_selesai_detik`.
-
-
-## Dataset
-
-`data/pesanan.csv` berisi 200.000 pesanan dengan kolom:
-
-`oid`, `pelanggan`, `resto`, `menu`, `harga`, `prioritas`, `t_masuk_detik`, `t_selesai_detik`, dan `status`.
-
-`data/peta.csv` berisi koneksi lokasi dan waktu tempuh. Dataset ini disiapkan untuk milestone peta setelah M3.
-
-## Aturan implementasi
-
-Struktur data dan algoritma inti dibuat manual sesuai tugas. Tidak menggunakan `dict`, `set`, `sorted`, `.sort()`, `heapq`, `bisect`, atau `collections.*` untuk menggantikan struktur yang dinilai.
-
-## Menjalankan aplikasi
-
-Gunakan Python 3.11 atau lebih baru:
-
+Python 3.11+, tanpa pustaka tambahan.
 ```powershell
 python app.py
 ```
 
-Implementasi penuh M1–M3 akan diisi bertahap pada modul backend masing-masing dan dihubungkan melalui `frontend/ui.py`.
+## Struktur repositori
 
-## Checklist sampai M3
+```
+README.md
+app.py                 entry point ("python app.py")
+data/pesanan.csv       200.000 pesanan
+data/peta.csv          data lokasi (untuk M6)
+backend/m1_pesanan.py  M1: Array + Linked List          (selesai)
+backend/m2_antrean.py  M2: Queue + Stack (undo/redo)    (selesai)
+backend/m3_laporan.py  M3: Sort + Search                (berikutnya)
+backend/m4_pencarian.py M4: PetaHash + merge sort
+backend/m5_katalog.py  M5: Katalog (BST) + MinHeap
+backend/m6_peta.py     M6: Peta (graf) + BFS + Dijkstra
+frontend/ui.py         jendela Tkinter
+tests/test_m1.py       pengujian M1
+tests/test_m2.py       pengujian M2
+```
 
-- [x] Struktur repository dan dataset disiapkan.
-- [x] Scaffold modul M1–M3 dibuat.
-- [ ] Implementasi array dan linked list.
-- [ ] Implementasi stack, queue, undo, dan redo.
-- [ ] Implementasi insertion sort, merge sort, linear search, dan binary search.
-- [ ] Pengujian dan benchmark M1–M3.
+```mermaid
+flowchart LR
+    CSV["data/pesanan.csv"] --> L["LayananPesanan"]
+    L --> A["Array (dinamis)"]
+    L --> LL["LinkedList (head/tail)"]
+    UI["frontend/ui.py"] -->|menu M1| L
+```
+
+Tampilan: daftar menu di kiri, form parameter + hasil di kanan, panel **COMMAND** di bawah
+yang mencatat perintah, modul, dan waktu backend.
+
+## M1: Array vs Linked List
+
+Data yang sama dimuat ke dua struktur buatan sendiri (`Array` dan `LinkedList`), keduanya
+melayani lima operasi yang sama:
+
+| Operasi | Letak | Array | Linked List |
+|---|---|---|---|
+| Lihat pesanan ke-i | indeks i | O(1) | O(n) |
+| Tambah REGULER (3) | paling belakang | O(1) amortized | O(1) via `tail` |
+| Tambah PRIORITAS (2) | tengah, indeks n // 2 | O(n) geser | O(n) telusur |
+| Tambah VIP (1) | paling depan, indeks 0 | O(n) geser | O(1) via `head` |
+| Hapus pesanan ke-i | indeks i | O(n) geser | O(n) telusur |
+
+- **Array**: saat penuh, dibuat petak baru 2× lalu seluruh isi disalin, jadi `append`
+  amortized O(1).
+- **Linked List**: simpul tunggal dengan penunjuk `head` dan `tail`.
+- Setiap operasi melaporkan biayanya (elemen digeser / simpul ditelusuri) dan waktunya.
+
+Contoh hasil pada 200.000 baris:
+
+| Jenis | Array | Linked List |
+|---|---|---|
+| REGULER | 0 elemen digeser | 0 simpul ditelusuri |
+| PRIORITAS | ±100.000 elemen digeser | ±100.000 simpul ditelusuri |
+| VIP | 200.000 elemen digeser | 0 simpul ditelusuri |
+
+## Aturan implementasi
+
+Struktur data inti dibuat manual. Tidak memakai `dict`, `set`, `sorted`, `.sort()`,
+`heapq`, `bisect`, `collections.*`, literal `{}`, maupun comprehension dict/set.
+`list` hanya dipakai sebagai larik primitif.
+
+## M2: Stack & Queue
+
+M2 memakai stack buatan sendiri di atas `Array` M1 serta dua antrean yang selalu menerima
+pesanan yang sama berstatus `ANTRE`.
+
+| Fitur | Implementasi |
+|---|---|
+| Kasir | `ke_postfix(ekspresi)` lalu `hitung(postfix)` dengan dua stack; visualisasi jejak langkah Tahap 1 (1.x) dan Tahap 2 (2.x) pada tabel |
+| Undo / redo | Dua stack riwayat; aksi baru mengosongkan redo |
+| Antrean naif | Larik biasa, dequeue indeks 0 sehingga sisa elemen bergeser O(n) |
+| Antrean circular | `data`, `front`, `rear`, `count`; dequeue O(1), bertumbuh saat penuh |
+
+### Mengapa Antrean Melingkar Memerlukan `count`?
+Bila hanya menyimpan pointer `front` dan `rear`, keadaan **antrean kosong** (`count == 0`) dan keadaan **antrean penuh** (`count == kapasitas`) sama-sama menghasilkan kondisi `front == rear`. Untuk membedakan kedua kondisi tersebut tanpa ambiguitas dan tanpa menyia-nyiakan satu slot kosong memori, pencacah `count` disimpan secara eksplisit. Pengecekan kosong dilakukan dengan `count == 0` dan penuh dengan `count == kapasitas`.
+
+Enam menu M2 tersedia di aplikasi: 
+**STACK - POSTFIX (MESIN KASIR)**, **STACK - UNDO**, **STACK - REDO**, **QUEUE - ENQUEUE**, **QUEUE - DEQUEUE NAIF**, dan **QUEUE - DEQUEUE CIRCULAR**. Status menampilkan panjang dua antrean, kapasitas circular, penunjuk `front` & `rear`, total pergeseran naif, serta kedalaman undo/redo.
+
+## Screenshot & video demo
+
